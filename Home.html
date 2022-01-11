@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Generator</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+    <div class="password-generator">
+    <h1>Password Generator</h1>
+    <p class="password-generator__textbox">Your password will appear here.</p>
+    <div class="password-generator__form-item">
+        <label for="password-length">Password length: <span id="p-length"></span></label>
+        <input class="password-generator__input" type="range" id="password-length" name="theLength" value="10" min="1" max="30"/> 
+    </div>
+    <div class="password-generator__form-item">
+      <label for="uppercase-letters">Include Uppercase</label>
+      <input type="checkbox" name="uppercase" id="uppercase-letters" class="password-generator__checkbox" checked />
+    </div>
+    <div class="password-generator__form-item">
+      <label for="lowercase-letters">Include Lowercase</label>
+      <input type="checkbox" name="lowercase" id="lowercase-letters" class="password-generator__checkbox" />
+    </div>
+    <div class="password-generator__form-item">
+      <label for="numbers">Include Numbers</label>
+      <input type="checkbox" name="numbers" id="numbers" class="password-generator__checkbox" />
+    </div>
+    <div class="password-generator__form-item">
+      <label for="symbols">Include Symbols</label>
+      <input type="checkbox" name="symbols" id="symbols" class="password-generator__checkbox" />
+    </div>
+    <div class="button_container">
+    <button class="password-generator__button">Generate</button>
+      <button class="password-copy__button tooltip" onclick="copyPassword()" onmouseout="outFunc()"><span class="tooltiptext" id="myTooltip">Copy to clipboard</span>Copy</button>
+    </div>
+  </div>
+  <script> 
+         // DOM Elements
+const output = document.querySelector(".password-generator__textbox"),
+    length = document.querySelector("#password-length"),
+    checkboxes = [...document.querySelectorAll("input[type='checkbox']")],
+    generateButton = document.querySelector(".password-generator__button"),
+    lengthOutput = document.getElementById("p-length");
+    lengthOutput.innerHTML = length.value;
+
+length.oninput = function() {
+  lengthOutput.innerHTML = this.value;
+}
+const characters = {
+    uppercase: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+    lowercase: "abcdefghijklmnopqrstuvwxyz",
+    numbers: "0123456789",
+    symbols: '!;,.%/(){}#+-:_"@|`$=*^[]?&~'
+};
+
+function generatePassword() {
+    let password = "",
+        passwordLength = length.value,
+        selection = "";
+
+    checkboxes.forEach(checkbox => {
+        if (checkbox.checked) {
+            selection += characters[checkbox.name];
+        }
+    });
+
+    if (!selection) {
+        output.innerHTML = "Please select character type";
+    } else {
+        for (let i = 0; i < passwordLength; i++) {
+            password += selection[Math.floor(Math.random() * selection.length)];
+        }
+
+        output.innerHTML = password;
+    }
+}
+
+generateButton.addEventListener("click", generatePassword);
+
+function copyPassword() {
+  var range = document.createRange();
+    range.selectNode(document.querySelector(".password-generator__textbox"));
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);
+    document.execCommand("copy");
+    window.getSelection().removeAllRanges();
+  // alert("Copied the Password");
+  var tooltip = document.getElementById("myTooltip");
+  tooltip.innerHTML = "Password Copied";
+}
+
+function outFunc() {
+  var tooltip = document.getElementById("myTooltip");
+  tooltip.innerHTML = "Copy to clipboard";
+}
+
+</script>
+</body>
+</html>
